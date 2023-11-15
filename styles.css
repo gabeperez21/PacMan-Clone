@@ -1,0 +1,37 @@
+canvas {
+    border: 1px solid black;
+  }
+  #gamepad {
+    position: absolute;
+    top: 500px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(243, 7, 7, 0.5);
+  }
+  #gamepad button {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+  }
+
+  #gameCanvas,
+  #scoreContainer {
+    float: left;
+  }
+
+  #scoreContainer {
+    padding-top: 10px;
+    padding-left: 20px;
+  }
+
+  #gameContainer::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  @media screen and (min-width: 1024px) {
+    #gamepad {
+      display: none;
+    }
+  }
