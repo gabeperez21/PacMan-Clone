@@ -1,4 +1,4 @@
-export let maze = [
+export let maze3 = [
     [
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1
@@ -85,7 +85,7 @@ export let maze = [
     ]
   ]
 
-  export let maze2 = [
+  export let maze4 = [
     [
       1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1
@@ -171,3 +171,55 @@ export let maze = [
       1, 1, 1, 1, 1
     ]
   ]
+
+  // Seeded RNG function
+function SeededRNG(seed) {
+  return function() {
+      seed = seed * 16807 % 2147483647;
+      return (seed - 1) / 2147483646;
+  };
+}
+
+// Function to shuffle an array using a custom random number generator
+function shuffleArray(array, rng) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+// Maze generation function
+function generateMaze(width, height, seed) {
+  let random = SeededRNG(seed);
+  let maze = new Array(height);
+  for (let y = 0; y < height; y++) {
+      maze[y] = new Array(width).fill(false);
+  }
+
+  function carve(x, y) {
+      const directions = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+      shuffleArray(directions, random);
+
+      for (let i = 0; i < directions.length; i++) {
+          const dx = directions[i][0], dy = directions[i][1];
+          const nx = x + dx * 2, ny = y + dy * 2;
+          if (nx >= 0 && nx < width && ny >= 0 && ny < height && !maze[ny][nx]) {
+              maze[ny][nx] = true;
+              maze[y + dy][x + dx] = true;
+              carve(nx, ny);
+          }
+      }
+  }
+
+  // Randomly choose a starting point
+  const startX = Math.floor(random() * width);
+  const startY = Math.floor(random() * height);
+  maze[startY][startX] = true;
+
+  carve(startX, startY);
+
+  return maze;
+}
+
+export let maze = generateMaze(28, 21, 12345); // Seed 12345 for maze3
+export let maze2 = generateMaze(28, 21, 54321); // Seed 54321 for maze4
