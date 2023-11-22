@@ -49,20 +49,27 @@
 
       let currentMaze = maze
 
-      const initialMazeState = JSON.parse(JSON.stringify(maze))
+      let currentMazeState = JSON.parse(JSON.stringify(maze))
 
       function nextLevel() {
         if (currentMaze === maze) {
           currentMaze = maze2
+          console.log(currentMaze)
+          currentMazeState = JSON.parse(JSON.stringify(maze2))
         } else if (currentMaze === maze2) {
           currentMaze = maze3
+          console.log(currentMaze)
+          currentMazeState = JSON.parse(JSON.stringify(maze3))
         } else if (currentMaze === maze3) {
           currentMaze = maze4
+          console.log(currentMaze)
+          currentMazeState = JSON.parse(JSON.stringify(maze4))
         } else {
-          currentMaze = maze // This will restart the cycle with maze1
+          currentMaze = maze
+          console.log(currentMaze)
+          currentMazeState = JSON.parse(JSON.stringify(maze))
         }
 
-        // Reset Pac-Man's position and other necessary variables for the new level
         pacManX = 12
         pacManY = 10
         pacManVelocityX = 0
@@ -71,14 +78,10 @@
         controls.up = false
         controls.right = false
         controls.down = false
-
-        if (currentMaze == maze) {
-          maze = JSON.parse(JSON.stringify(initialMazeState))
-        }
       }
 
       function checkForLevelCompletion() {
-        for (let row of currentMaze) {
+        for (let row of currentMazeState) {
           if (row.includes(2)) {
             return false
           }
@@ -89,7 +92,7 @@
       function drawMaze() {
         for (let y = 0; y < tileCountY; y++) {
           for (let x = 0; x < tileCountX; x++) {
-            if (currentMaze[y][x] === 1) {
+            if (currentMazeState[y][x] === 1) {
               if (currentMaze === maze) {
                 ctx.fillStyle = 'blue' // Color for maze walls
               } else if (currentMaze === maze2) {
@@ -100,7 +103,7 @@
                 ctx.fillStyle = 'purple' // Example color for maze4 walls
               }
               ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize)
-            } else if (currentMaze[y][x] === 2) {
+            } else if (currentMazeState[y][x] === 2) {
               ctx.fillStyle = '#CCCC00'
               ctx.beginPath()
               ctx.arc(
@@ -234,7 +237,7 @@
             controls.down = false
             score = 0
             updateScore(score)
-            maze = JSON.parse(JSON.stringify(initialMazeState)) // Reset the maze to its initial state
+            currentMazeState = JSON.parse(JSON.stringify(maze)) // Reset the maze to its initial state
             break
         }
       })
@@ -327,8 +330,8 @@
         let gridY = Math.floor(pacManY)
 
         // Eat the pellet and increase score
-        if (currentMaze[gridY][gridX] === 2) {
-          currentMaze[gridY][gridX] = 0 // Remove the pellet from the maze
+        if (currentMazeState[gridY][gridX] === 2) {
+          currentMazeState[gridY][gridX] = 0 // Remove the pellet from the maze
           score += 10 // Increase the score
           updateScore(score) // Update the score display
         }
